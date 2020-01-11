@@ -1,0 +1,103 @@
+package player;
+
+import java.util.ArrayList;
+
+// This class adds the values for all the cards, adds the two initial cards and other cards requested by the 
+// player to the hand ArrayList and returns the playerName along with the sum of all the values of the card
+// and the hand ArrayList
+public class Player implements PlayerAPI {
+
+
+	    private ArrayList<Card> hand;
+	    private String playerName;
+
+	   // Instantiate the ArrayList hand and initialize the instance variable playerName
+	    public Player(int playerNum) {
+	    	hand = new ArrayList<Card>();
+	    	playerName = "Player" + playerNum;
+	    }
+	    
+	    // add the Card object in the parameter to the ArrayList hand
+	    // Changed the addCard method so that the cards are inserted in descending
+	    // order: A,K,Q,J,10,9,8,7,6,5,4,3,2,1
+	    
+	    public void addCard(Card c) {
+	    	// if the hand is empty add a card
+	    	if(hand.size() == 0)
+	    	{
+	    		hand.add(c);
+	    	}
+	    	else if(hand.size() > 0)
+	    	{
+	    		
+	    		for(int i=0; i<hand.size(); i++)
+	    		{
+	    		// if the size of the hand is greater than zero (which is now 1 since the card was just added)
+	    		// then compare it with the card in the parameter and if it returns a negative value
+	    		// then put the card before the current one since we are sorting in descending order
+	    		if(hand.get(i).compareTo(c) < 0)
+	    		{
+	    			// if the card c is bigger then add it before the current one and return 
+	    			hand.add(i,c);
+	    			// here hand size increases as card is added
+	    			return;
+	    			// Another card will be sent to this method to compare with all the cards in hand
+	    			// and the same process is used to sort the cards
+	    			
+	    		}
+	    		}
+	    	}
+	    	// if the card c is not bigger then simply append it to the end of the current cards
+	    	hand.add(c);
+	    }
+
+	   // This method returns the sum of the values of all the cards 
+	    public int getHandValue() {
+	    	int sum = 0;
+	    	
+	    	// add all the values of the cards in the hand ArrayList and return the sum
+	    	for(int i=0; i<hand.size(); i++)
+	    	{
+	    		sum+= hand.get(i).getValue();
+	    	}
+	        
+	        return sum;
+	    }
+	   
+	   
+	    public boolean hit(){
+	        
+	    	// loop through the hand ArrayList and if there is an Ace then call the convertAce() function
+	    	// to convert it's value from 11 to 1
+	    	for(int i=0; i<hand.size(); i++)
+	    	{
+	    		if(hand.get(i).getFace().equals("A"))
+					{
+	    				hand.get(i).convertAce();
+					}
+
+	    	}
+	    	// if the sum of the values of all the cards is less than 17 return true to get another card
+	    	if(getHandValue() < 21)
+	    	{
+	    		return true;
+	    	}
+	        // if the sum of values is more than 17 then don't ask for a new card
+	        return false;
+	    }
+	    
+	    // Return the playerName instance variable
+	    public String getName(){
+	        return playerName;
+	    }
+	    
+	    
+
+	    // Return a String that has the playerName followed by the getHandValue() and the hand
+	    @Override
+	    public String toString() { 
+	        return playerName + " = " + getHandValue() + " " + hand;
+	    }
+
+	}
+
