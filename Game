@@ -1,0 +1,156 @@
+package game;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+
+// This class creates a deck and a player array where all the players are stored and it contains the playGame()
+// method which simulates the game 26 by first calling the dealCards() method which gives 2 cards initially to
+// each player
+public class Game {
+	
+	// create an array of type PlayerAPI which is an interface
+	PlayerAPI[] player;
+	ArrayList<Card> deck;
+	private int numDecks;
+	
+	
+	// Initialize the private instance variables in the Game constructor with the values passed by the main class
+	
+	public Game (int numDecks, int numPlayers)
+	{
+		this.numDecks = numDecks;
+		deck = new ArrayList<>();
+		
+		// have the player array contain numPlayers number of players
+		player = new Player[numPlayers];
+		
+		// assign the first player in the array to be a Dealer
+		player[0] = new Dealer();
+		
+		// loop through the number of players and add new player objects to the player array
+		for(int i=1; i< numPlayers; i++)
+		{
+			player[i]= new Player(i);
+		}
+		
+		// Note: this really shows how interface can be used to implement Polymorphism
+		// here, the player array of type PlayerAPI contains 2 different objects: Player objects
+		// and Dealer objects and calling the 1st element of the array will give us the Dealer object
+		// while calling the rest of the players will be Player objects. So, the player array can hold
+		// objects of different types showing the implementation of Polymorphism
+		
+		// call the create deck and shuffle deck methods in the Card class
+		createDeck();
+		shuffleDeck();
+	}
+	
+	// This method creates the deck by adding each newly created card
+    // object to the deck ArrayList
+    public void createDeck() {
+        ArrayList <String> suit = new ArrayList<>(Arrays.asList("S", "C", "H", "D"));
+        ArrayList <Integer> value= new ArrayList<>(Arrays.asList(1,2,3,4,5,6,7,8,9,10,11,12,13));
+        for (int i=0; i<numDecks; i++){
+            for (int j=0; j<suit.size(); j++){
+                for (int k=0; k<value.size(); k++){
+                    deck.add(new Card (value.get(k), suit.get(j)));
+                }
+                
+            }
+        }
+
+    }
+
+  // This method shuffles the cards in the deck
+    public void shuffleDeck() {
+        for (int i=0; i<deck.size(); i++){
+            int randIdx = (int) (Math.random()*52);
+            Card temp = deck.get(i);
+            deck.set(i,deck.get(randIdx));
+            deck.set(randIdx,temp);
+        }
+
+    }
+    
+    // This dealCards method removes and returns a single card each time it is called
+    public Card dealCard()
+    {
+    	// if the size of the deck is empty return null
+    	if(deck.size() == 0) {
+    		return null;
+    	}
+    	Card returnedCard = deck.remove(0);
+    	return returnedCard;
+    	
+    }
+    
+    
+    // This method is called when the instance of Deck class is called
+    // and it prints out the cards in a neat and orderly way
+      public String toString() {
+          String show= "";
+          for (int i=0; i<deck.size(); i++){
+              if (i% 13 ==0){
+                  show += "\n";
+              }
+              if (i% 52 ==0){
+                  show += "\n";
+              }
+              show += deck.get(i) + " ";
+          }
+          return show;
+          
+
+      }
+      
+      // This method simulates the game by first giving 2 cards each to all the players, and looping until
+      // the players don't ask for additional cards, finding the winningHandValue by comparing the HandValues of 
+      // all the players and lastly printing the name of the winner.
+      // There can be two winners if their HandValue is the same and closest to the number 26(not exceeding it)
+      public void playGame() {
+
+    	    // deal two cards to every player
+    	    for (int i = 0; i < player.length; i++) {
+    	        player[i].addCard(dealCard());
+    	        player[i].addCard(dealCard());
+    	    }
+
+    	    // loop while players want additional cards 
+    	    boolean dealAdditionalCards = true;
+    	    while (dealAdditionalCards) {
+    	        dealAdditionalCards = false;
+    	        for (Player player : player) {
+    	            if (player.hit() && deck.size() > 0) {
+    	                player.addCard(dealCard());
+    	                dealAdditionalCards = true;
+    	            }
+    	        }
+    	    }
+    	    
+    	    // determine the winning hand value
+    	    int winningHandValue = 0;
+    	    for (Player player : player) {
+    	        System.out.println(player);
+    	        if (player.getHandValue() <= 26 && 
+    	            player.getHandValue() > winningHandValue) {
+    	            winningHandValue = player.getHandValue();
+    	        }
+    	    }
+    	    
+    	    // output the winner
+    	    System.out.println("");
+    	    if (winningHandValue > 0) {
+    	        for (int i = 0; i < player.length; i++) {
+    	            if (player[i].getHandValue() == winningHandValue) {
+    	                System.out.println("Winner is: " + player[i].getName());
+    	                if (i == 0) {
+    	                    break;
+    	                }
+    	            }
+    	        }
+    	    } else {
+    	        System.out.println("No Winner. All players over 21.");
+    	    }
+    	}
+
+ 
+}
