@@ -16,11 +16,38 @@ public class Dealer implements PlayerAPI {
 		   playerName = "Dealer";
 	   }
 	    
-	    // add the Card object in the parameter to the ArrayList hand
+	   // add the Card object in the parameter to the ArrayList hand
+	    // Changed the addCard method so that the cards are inserted in descending
+	    // order: A,K,Q,J,10,9,8,7,6,5,4,3,2,1
+	    
 	    public void addCard(Card c) {
-
+	    	// if the hand is empty add a card
+	    	if(hand.size() == 0)
+	    	{
+	    		hand.add(c);
+	    	}
+	    	else if(hand.size() > 0)
+	    	{
+	    		
+	    		for(int i=0; i<hand.size(); i++)
+	    		{
+	    		// if the size of the hand is greater than zero (which is now 1 since the card was just added)
+	    		// then compare it with the card in the parameter and if it returns a negative value
+	    		// then put the card before the current one since we are sorting in descending order
+	    		if(hand.get(i).compareTo(c) < 0)
+	    		{
+	    			// if the card c is bigger then add it before the current one and return 
+	    			hand.add(i,c);
+	    			// here hand size increases as card is added
+	    			return;
+	    			// Another card will be sent to this method to compare with all the cards in hand
+	    			// and the same process is used to sort the cards
+	    			
+	    		}
+	    		}
+	    	}
+	    	// if the card c is not bigger then simply append it to the end of the current cards
 	    	hand.add(c);
-	        
 	    }
 
 	   // This method returns the sum of the values of all the cards 
