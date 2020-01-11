@@ -1,0 +1,78 @@
+package card;
+
+// This class returns a card with face followed by the suit, initializes the instance variables with the values
+// and returns the values in the getValue() method which will be used by the getHandValue() method to sum
+// the values of all the cards
+public class Card implements Comparable<Card> {
+	
+	    private String face;
+	    private String suit;
+	    private int value;
+
+	    // Initialize the instance variables in the constructor
+	    public Card(int value, String suit) {
+	        this.suit = suit;
+	        this.value = value;
+
+	        // change the values of J, Q, and K to 10 and change the value of A to 11
+	        if (value == 11) {
+	            this.face = "J";
+	            this.value = 10;
+	        } else if (value == 12) {
+	            this.face = "Q";
+	            this.value = 10;
+	        } else if (value == 13) {
+	            this.face = "K";
+	            this.value = 10;
+	        } else if (value == 1) {
+	            this.face = "A";
+	            this.value = 11;
+	        } else {
+	            this.face = "" + value;
+	        }
+	    }
+	    public String getFace() {
+	    	return face;
+	    }
+	    public boolean convertAce() {
+	        if (face.equals("A") && value == 11) {
+	            value = 1;
+	            return true;
+	        }
+	        return false;
+	    }
+
+	    // return the value in the getter method
+	    public int getValue() {
+	        return value;
+	    }
+
+	    // override the Object toString() method and return face followed by the suit
+	    public String toString() {
+	        return face + suit;
+	    }
+		public int compareTo(Card c) {
+			// check if the value of this card and the card passed in the parameter is both 10
+			if(this.value == 10 && c.value == 10)
+			{
+				// since K comes before Q in alphabetical order when these two are compared
+				// then it will return a negative value but we want to return a positive value
+				// since in this program K is greater than Q
+				if(this.face == "K" && c.face == "Q")
+				{
+					return 1;
+				}
+				// if the current face is Q and passed in face is K then return -1 
+				else if(this.face == "Q" && c.face == "K")
+				{
+					return -1;
+				}
+			}
+			// since we took care of the exceptions already (K and Q), we can just compare
+			// the faces using the string compareTo method and it will return positive or negative value correctly
+			// as we are comparing two strings
+		
+			return this.face.compareTo(c.face);
+		}
+	}
+
